@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorpresa 💜</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #1a1a2e; /* Color oscuro inicial */
+            transition: background 1.5s ease-in-out;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* --- Pantalla Inicial (Cerradura) --- */
+        #lock-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .heart-btn {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .heart-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .password-area {
+            margin-top: 30px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .password-area.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        input[type="password"] {
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #e91e63;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover { background-color: #c2185b; }
+
+        .error {
+            color: #ff4d4d;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* --- Pantalla Sorpresa --- */
+        #surprise-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .bg-surprise {
+            background: linear-gradient(135deg, #8e44ad 0%, #ff9a9e 100%);
+        }
+
+        #surprise-screen h1 {
+            color: white;
+            font-size: 3rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .gallery {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .gallery img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="lock-screen">
+            <div class="heart-btn" id="heart" onclick="showPassword()">
+                <svg viewBox="0 0 24 24" width="120" height="120" fill="#e91e63">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    <path d="M12 7c-1.1 0-2 .9-2 2 0 .74.4 1.38 1 1.73V14h2v-3.27c.6-.35 1-.99 1-1.73 0-1.1-.9-2-2-2z" fill="#1a1a2e" id="keyhole"/>
+                </svg>
+            </div>
+            
+            <div class="password-area" id="password-area">
+                <input type="password" id="pass-input" placeholder="Ingresa la fecha especial">
+                <br>
+                <button onclick="checkPassword()">Desbloquear</button>
+                <p class="error" id="error-msg">Contraseña incorrecta, amor. Intenta de nuevo.</p>
+            </div>
+        </div>
+
+        <div id="surprise-screen">
+            <h1>Feliz 14 atrasado 💜</h1>
+            <div class="gallery">
+                <img src="img1.jpeg" alt="Nuestra foto 1">
+                <img src="img2.jpeg" alt="Nuestra foto 2">
+                <img src="img3.jpeg" alt="Nuestra foto 3">
+                <img src="img4.jpeg" alt="Nuestra foto 4">
+                <img src="img5.jpeg" alt="Nuestra foto 5">
+                <img src="img6.jpeg" alt="Nuestra foto 6">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPassword() {
+            document.getElementById('password-area').classList.add('show');
+        }
+
+        function checkPassword() {
+            const pass = document.getElementById('pass-input').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            // Contraseña que estableciste
+            if(pass === '21102022') {
+                errorMsg.style.display = 'none';
+                
+                // Ocultar pantalla de bloqueo
+                const lockScreen = document.getElementById('lock-screen');
+                lockScreen.style.transform = 'scale(0)';
+                lockScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                    
+                    // Cambiar el fondo del body
+                    document.body.classList.add('bg-surprise');
+                    
+                    // Mostrar sorpresa
+                    const surprise = document.getElementById('surprise-screen');
+                    surprise.style.visibility = 'visible';
+                    surprise.style.opacity = '1';
+                    surprise.style.transform = 'scale(1)';
+                }, 1000); // Espera 1 segundo para la transición
+
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
