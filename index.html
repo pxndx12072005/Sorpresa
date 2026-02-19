@@ -2,16 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sorpresa 💜</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
             background-color: #1a1a2e; 
@@ -19,199 +17,130 @@
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; height: 100vh; text-align: center; position: relative;
         }
 
         /* --- Pantalla Inicial (Cerradura) --- */
         #lock-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: opacity 1s ease, transform 1s ease;
-            z-index: 10;
+            display: flex; flex-direction: column; align-items: center;
+            transition: opacity 1s ease, transform 1s ease; z-index: 10; position: absolute;
         }
-
-        .heart-btn {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            animation: pulse 2s infinite;
-        }
-
+        .heart-btn { cursor: pointer; transition: transform 0.3s ease; animation: pulse 2s infinite; }
         .heart-btn:hover { transform: scale(1.1); }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .password-area {
-            margin-top: 30px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
-        }
-
-        .password-area.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        input[type="password"] {
-            padding: 10px 15px;
-            border-radius: 20px;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        button {
-            padding: 10px 20px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 20px;
-            background-color: #e91e63;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        button:hover { background-color: #c2185b; }
-
-        .error {
-            color: #ff4d4d;
-            margin-top: 10px;
-            font-size: 14px;
-            display: none;
-        }
-
-        /* --- Pantalla Sorpresa --- */
-        #surprise-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.8);
-            transition: opacity 1.5s ease, transform 1.5s ease;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 40px 20px;
-            box-sizing: border-box;
-            z-index: 5;
-        }
-
-        .bg-surprise {
-            background: linear-gradient(135deg, #8e44ad 0%, #ff9a9e 100%);
-        }
-
-        #surprise-screen h1 {
-            color: white;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
-            margin-top: 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* --- Contador --- */
-        .counter-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px 25px;
-            border-radius: 15px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* --- Máquina de Escribir --- */
-        .typewriter-text {
-            color: white;
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            min-height: 60px; /* Evita que la página salte mientras escribe */
-            max-width: 600px;
-            text-align: center;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1.2rem;
-            background-color: white;
-            animation: blink 0.7s infinite;
-            vertical-align: middle;
-            margin-left: 2px;
+        .password-area { margin-top: 30px; opacity: 0; visibility: hidden; transition: opacity 0.5s ease; }
+        .password-area.show { opacity: 1; visibility: visible; }
+        input[type="password"] {
+            padding: 10px 15px; border-radius: 20px; border: none; outline: none;
+            font-size: 16px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 80%; max-width: 300px;
         }
+        button {
+            padding: 10px 20px; margin-top: 15px; border: none; border-radius: 20px;
+            background-color: #e91e63; color: white; font-size: 16px; cursor: pointer;
+            font-weight: 600; transition: background 0.3s;
+        }
+        button:hover { background-color: #c2185b; }
+        .error { color: #ff4d4d; margin-top: 10px; font-size: 14px; display: none; }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        /* --- Pantalla Sorpresa (Fondo y Estructura) --- */
+        .bg-surprise { background: linear-gradient(135deg, #8e44ad 0%, #ff9a9e 100%); }
+        
+        #surprise-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            opacity: 0; visibility: hidden; transform: scale(0.8);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            overflow-y: auto; overflow-x: hidden; padding: 40px 20px; box-sizing: border-box; z-index: 5;
         }
+        #surprise-screen h1 {
+            color: white; font-size: 2.5rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 15px; margin-top: 30px; text-align: center; animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        /* --- Textos y Contadores --- */
+        .counter-box {
+            background: rgba(255, 255, 255, 0.2); padding: 15px 20px; border-radius: 15px;
+            color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 25px;
+            backdrop-filter: blur(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 90%; max-width: 500px;
+        }
+        .typewriter-text {
+            color: white; font-size: 1.2rem; margin-bottom: 30px; min-height: 90px; width: 90%; max-width: 600px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2); word-wrap: break-word; overflow-wrap: break-word; padding: 0 10px; box-sizing: border-box;
+        }
+        .cursor { display: inline-block; width: 3px; height: 1.2rem; background-color: white; animation: blink 0.7s infinite; vertical-align: middle; margin-left: 2px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* --- Galería --- */
-        .gallery {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 800px;
-            z-index: 10;
-        }
-
+        .gallery { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; max-width: 800px; z-index: 10; margin-bottom: 30px; }
         .gallery img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
+            width: 100%; max-width: 250px; height: 250px; object-fit: cover; border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2); transition: transform 0.3s;
         }
-
         .gallery img:hover { transform: scale(1.05); }
 
-        /* --- Lluvia de Corazones --- */
+        /* --- Disco de Vinilo --- */
+        .vinyl-container { margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; }
+        .vinyl {
+            width: 160px; height: 160px; border-radius: 50%; background-color: #111;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.2);
+            animation: spin 4s linear infinite; position: relative;
+            border: 4px solid #222;
+        }
+        .vinyl::before { /* Ranuras del vinilo */
+            content: ''; position: absolute; width: 120px; height: 120px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .vinyl::after { /* Hueco central */
+            content: ''; position: absolute; width: 20px; height: 20px; background-color: #2c3e50;
+            border-radius: 50%; border: 2px solid #fff; z-index: 3;
+        }
+        .vinyl img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; z-index: 2; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- Botón Final --- */
+        #final-btn {
+            background-color: transparent; border: 2px solid white; padding: 12px 25px; border-radius: 30px;
+            color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
+            backdrop-filter: blur(5px); margin-bottom: 50px;
+        }
+        #final-btn:hover { background-color: white; color: #8e44ad; }
+
+        /* --- Pantalla Final (Eres perfecta) --- */
+        #final-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; z-index: 20; transition: opacity 1s ease;
+        }
+        .perfect-text {
+            color: white; font-size: 4rem; font-weight: 800; text-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            text-align: center; transform: scale(0.5); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .perfect-text.show { transform: scale(1); }
+
+        /* --- Lluvia de Corazones (Fondo) --- */
         .rain-heart {
-            position: fixed;
-            top: -10vh;
-            font-size: 20px;
-            user-select: none;
-            pointer-events: none; /* Para que no estorben al hacer clic en las fotos */
-            animation: fall linear forwards;
-            z-index: 1;
+            position: fixed; top: -10vh; font-size: 20px; user-select: none; pointer-events: none; 
+            animation: fall linear forwards; z-index: 1;
         }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+        @keyframes fall { to { transform: translateY(120vh) rotate(360deg); } }
+        
+        @media (max-width: 480px) {
+             #surprise-screen h1 { font-size: 2rem; }
+             .typewriter-text { font-size: 1.1rem; }
+             .counter-box { font-size: 1rem; padding: 15px 10px;}
+             .perfect-text { font-size: 3rem; }
         }
-
     </style>
 </head>
 <body>
+
+    <audio id="bg-music" loop>
+        <source src="cancion.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="container">
         <div id="lock-screen">
@@ -232,9 +161,7 @@
 
         <div id="surprise-screen">
             <h1>Feliz 14 atrasado 💜</h1>
-            
             <div class="counter-box" id="time-counter">Calculando nuestro tiempo...</div>
-            
             <div class="typewriter-text">
                 <span id="typed-text"></span><span class="cursor"></span>
             </div>
@@ -247,19 +174,27 @@
                 <img src="img5.jpeg" alt="Nuestra foto 5">
                 <img src="img6.jpeg" alt="Nuestra foto 6">
             </div>
+
+            <div class="vinyl-container">
+                <div class="vinyl">
+                    <img src="portada.jpg" alt="Portada de la música">
+                </div>
+            </div>
+            
+            <button id="final-btn" onclick="triggerFinalSurprise()">Presióname si quieres saber algo más</button>
+        </div>
+
+        <div id="final-screen">
+            <div class="perfect-text">Eres perfecta ✨</div>
         </div>
     </div>
 
     <script>
-        // --- Variables y Textos ---
-        const startDate = new Date('2022-10-21T00:00:00'); // Fecha de inicio
+        const startDate = new Date(2022, 9, 21, 0, 0, 0); 
         const messageToType = "Desde ese 21 de octubre, cada momento contigo ha sido increíble. Gracias por todo este tiempo juntos. Te amo.";
-        let i = 0;
-        let rainInterval;
+        let i = 0; let rainInterval;
 
-        function showPassword() {
-            document.getElementById('password-area').classList.add('show');
-        }
+        function showPassword() { document.getElementById('password-area').classList.add('show'); }
 
         function checkPassword() {
             const pass = document.getElementById('pass-input').value;
@@ -268,7 +203,11 @@
             if(pass === '21102022') {
                 errorMsg.style.display = 'none';
                 
-                // Ocultar pantalla de bloqueo
+                // Reproducir la música al desbloquear
+                const bgMusic = document.getElementById('bg-music');
+                bgMusic.volume = 0.5; // Volumen al 50%
+                bgMusic.play().catch(e => console.log("Interacción requerida para audio"));
+
                 const lockScreen = document.getElementById('lock-screen');
                 lockScreen.style.transform = 'scale(0)';
                 lockScreen.style.opacity = '0';
@@ -282,76 +221,121 @@
                     surprise.style.opacity = '1';
                     surprise.style.transform = 'scale(1)';
 
-                    // Iniciar animaciones al abrir
                     startCounter();
-                    setTimeout(typeWriter, 1000); // Espera 1 seg antes de empezar a escribir
+                    setTimeout(typeWriter, 1000);
                     startHeartRain();
                 }, 1000);
-
             } else {
                 errorMsg.style.display = 'block';
+                const passArea = document.getElementById('password-area');
+                passArea.style.animation = 'shake 0.5s';
+                setTimeout(() => passArea.style.animation = '', 500);
             }
         }
+        
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes shake { 0%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(-10px); } 50% { transform: translateX(10px); } }`;
+        document.head.appendChild(style);
 
-        // --- Función del Contador ---
-        function startCounter() {
-            updateCounter(); // Ejecutar la primera vez de inmediato
-            setInterval(updateCounter, 1000); // Actualizar cada segundo
-        }
-
+        function startCounter() { updateCounter(); setInterval(updateCounter, 1000); }
         function updateCounter() {
-            const now = new Date();
-            const diff = now - startDate;
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / 1000 / 60) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-
-            document.getElementById('time-counter').innerText = 
-                `${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos juntos`;
+            const now = new Date(); let diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24)); diff -= days * (1000 * 60 * 60 * 24);
+            const hours = Math.floor(diff / (1000 * 60 * 60)); diff -= hours * (1000 * 60 * 60);
+            const minutes = Math.floor(diff / (1000 * 60)); diff -= minutes * (1000 * 60);
+            const seconds = Math.floor(diff / 1000);
+            document.getElementById('time-counter').innerText = `${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos juntos`;
         }
 
-        // --- Función Máquina de Escribir ---
         function typeWriter() {
             if (i < messageToType.length) {
                 document.getElementById("typed-text").innerHTML += messageToType.charAt(i);
-                i++;
-                setTimeout(typeWriter, 60); // Velocidad de escritura (60ms)
-            } else {
-                // Ocultar el cursor al terminar
-                document.querySelector('.cursor').style.display = 'none';
-            }
+                i++; setTimeout(typeWriter, 60); 
+            } else { document.querySelector('.cursor').style.display = 'none'; }
         }
 
-        // --- Función Lluvia de Corazones ---
-        function startHeartRain() {
-            // Crea un corazón nuevo cada 300 milisegundos
-            rainInterval = setInterval(createHeart, 300);
-            
-            // Si quieres que pare después de un rato, puedes descomentar esto (pararía a los 15 seg):
-            // setTimeout(() => clearInterval(rainInterval), 15000); 
-        }
-
+        function startHeartRain() { rainInterval = setInterval(createHeart, 300); }
         function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('rain-heart');
-            
-            // Diferentes colores o emojis de corazones aleatorios
+            const heart = document.createElement('div'); heart.classList.add('rain-heart');
             const hearts = ['💜', '💖', '💗', '🤍', '✨'];
             heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
-            
-            // Posición y tamaño aleatorio
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's'; // Entre 3 y 6 segundos en caer
-            heart.style.fontSize = Math.random() * 15 + 15 + 'px'; // Tamaño entre 15px y 30px
-            
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's'; 
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px'; 
             document.getElementById('surprise-screen').appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
 
-            // Eliminar el corazón del HTML una vez que termina la animación para no saturar la memoria
+        // --- FUNCIONES NUEVAS: Sorpresa Final ---
+        function triggerFinalSurprise() {
+            // 1. Ocultar la pantalla anterior gradualmente
+            const surpriseScreen = document.getElementById('surprise-screen');
+            surpriseScreen.style.opacity = '0';
+            
+            // 2. Parar la lluvia de corazones del fondo para limpiar la pantalla
+            clearInterval(rainInterval);
+            
             setTimeout(() => {
-                heart.remove();
-            }, 6000);
+                surpriseScreen.style.display = 'none';
+                
+                // 3. Mostrar la nueva pantalla con el texto
+                const finalScreen = document.getElementById('final-screen');
+                finalScreen.style.visibility = 'visible';
+                finalScreen.style.opacity = '1';
+                
+                // Animación de rebote para el texto
+                document.querySelector('.perfect-text').classList.add('show');
+                
+                // 4. Explotar el confeti de corazones
+                fireHeartConfetti();
+                
+            }, 1000); // Espera 1 segundo a que desaparezca lo viejo
+        }
+
+        function fireHeartConfetti() {
+            const duration = 3000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff007f', '#ff88cc', '#cc00ff', '#8e44ad', '#ff9a9e'],
+                    shapes: ['heart'],
+                    scalar: 2
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff007f', '#ff88cc', '#cc00ff', '#8e44ad', '#ff9a9e'],
+                    shapes: ['heart'],
+                    scalar: 2
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+            
+            // Un estallido central grande adicional
+            setTimeout(() => {
+                confetti({
+                    spread: 360,
+                    ticks: 100,
+                    gravity: 0,
+                    decay: 0.94,
+                    startVelocity: 30,
+                    shapes: ['heart'],
+                    colors: ['#ffffff', '#ff007f', '#8e44ad'],
+                    particleCount: 150,
+                    scalar: 2,
+                    origin: { x: 0.5, y: 0.5 }
+                });
+            }, 500);
         }
     </script>
 </body>
