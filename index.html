@@ -14,7 +14,7 @@
             height: 100%;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
-            background-color: #1a1a2e; /* Color oscuro inicial */
+            background-color: #1a1a2e; 
             transition: background 1.5s ease-in-out;
         }
 
@@ -33,6 +33,7 @@
             flex-direction: column;
             align-items: center;
             transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
         }
 
         .heart-btn {
@@ -41,9 +42,7 @@
             animation: pulse 2s infinite;
         }
 
-        .heart-btn:hover {
-            transform: scale(1.1);
-        }
+        .heart-btn:hover { transform: scale(1.1); }
 
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -104,15 +103,16 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             opacity: 0;
             visibility: hidden;
             transform: scale(0.8);
             transition: opacity 1.5s ease, transform 1.5s ease;
             overflow-y: auto;
-            padding: 20px;
+            overflow-x: hidden;
+            padding: 40px 20px;
             box-sizing: border-box;
+            z-index: 5;
         }
 
         .bg-surprise {
@@ -121,9 +121,10 @@
 
         #surprise-screen h1 {
             color: white;
-            font-size: 3rem;
+            font-size: 2.5rem;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
+            margin-bottom: 10px;
+            margin-top: 20px;
             animation: float 3s ease-in-out infinite;
         }
 
@@ -133,12 +134,53 @@
             100% { transform: translateY(0px); }
         }
 
+        /* --- Contador --- */
+        .counter-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- Máquina de Escribir --- */
+        .typewriter-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            min-height: 60px; /* Evita que la página salte mientras escribe */
+            max-width: 600px;
+            text-align: center;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2rem;
+            background-color: white;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* --- Galería --- */
         .gallery {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
             justify-content: center;
             max-width: 800px;
+            z-index: 10;
         }
 
         .gallery img {
@@ -150,8 +192,21 @@
             transition: transform 0.3s;
         }
 
-        .gallery img:hover {
-            transform: scale(1.05);
+        .gallery img:hover { transform: scale(1.05); }
+
+        /* --- Lluvia de Corazones --- */
+        .rain-heart {
+            position: fixed;
+            top: -10vh;
+            font-size: 20px;
+            user-select: none;
+            pointer-events: none; /* Para que no estorben al hacer clic en las fotos */
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
     </style>
@@ -177,6 +232,13 @@
 
         <div id="surprise-screen">
             <h1>Feliz 14 atrasado 💜</h1>
+            
+            <div class="counter-box" id="time-counter">Calculando nuestro tiempo...</div>
+            
+            <div class="typewriter-text">
+                <span id="typed-text"></span><span class="cursor"></span>
+            </div>
+
             <div class="gallery">
                 <img src="img1.jpeg" alt="Nuestra foto 1">
                 <img src="img2.jpeg" alt="Nuestra foto 2">
@@ -189,6 +251,12 @@
     </div>
 
     <script>
+        // --- Variables y Textos ---
+        const startDate = new Date('2022-10-21T00:00:00'); // Fecha de inicio
+        const messageToType = "Desde ese 21 de octubre, cada momento contigo ha sido increíble. Gracias por todo este tiempo juntos. Te amo.";
+        let i = 0;
+        let rainInterval;
+
         function showPassword() {
             document.getElementById('password-area').classList.add('show');
         }
@@ -197,7 +265,6 @@
             const pass = document.getElementById('pass-input').value;
             const errorMsg = document.getElementById('error-msg');
             
-            // Contraseña que estableciste
             if(pass === '21102022') {
                 errorMsg.style.display = 'none';
                 
@@ -208,20 +275,83 @@
                 
                 setTimeout(() => {
                     lockScreen.style.display = 'none';
-                    
-                    // Cambiar el fondo del body
                     document.body.classList.add('bg-surprise');
                     
-                    // Mostrar sorpresa
                     const surprise = document.getElementById('surprise-screen');
                     surprise.style.visibility = 'visible';
                     surprise.style.opacity = '1';
                     surprise.style.transform = 'scale(1)';
-                }, 1000); // Espera 1 segundo para la transición
+
+                    // Iniciar animaciones al abrir
+                    startCounter();
+                    setTimeout(typeWriter, 1000); // Espera 1 seg antes de empezar a escribir
+                    startHeartRain();
+                }, 1000);
 
             } else {
                 errorMsg.style.display = 'block';
             }
+        }
+
+        // --- Función del Contador ---
+        function startCounter() {
+            updateCounter(); // Ejecutar la primera vez de inmediato
+            setInterval(updateCounter, 1000); // Actualizar cada segundo
+        }
+
+        function updateCounter() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('time-counter').innerText = 
+                `${days} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos juntos`;
+        }
+
+        // --- Función Máquina de Escribir ---
+        function typeWriter() {
+            if (i < messageToType.length) {
+                document.getElementById("typed-text").innerHTML += messageToType.charAt(i);
+                i++;
+                setTimeout(typeWriter, 60); // Velocidad de escritura (60ms)
+            } else {
+                // Ocultar el cursor al terminar
+                document.querySelector('.cursor').style.display = 'none';
+            }
+        }
+
+        // --- Función Lluvia de Corazones ---
+        function startHeartRain() {
+            // Crea un corazón nuevo cada 300 milisegundos
+            rainInterval = setInterval(createHeart, 300);
+            
+            // Si quieres que pare después de un rato, puedes descomentar esto (pararía a los 15 seg):
+            // setTimeout(() => clearInterval(rainInterval), 15000); 
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('rain-heart');
+            
+            // Diferentes colores o emojis de corazones aleatorios
+            const hearts = ['💜', '💖', '💗', '🤍', '✨'];
+            heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            // Posición y tamaño aleatorio
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's'; // Entre 3 y 6 segundos en caer
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px'; // Tamaño entre 15px y 30px
+            
+            document.getElementById('surprise-screen').appendChild(heart);
+
+            // Eliminar el corazón del HTML una vez que termina la animación para no saturar la memoria
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
         }
     </script>
 </body>
